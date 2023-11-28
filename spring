@@ -1,0 +1,304 @@
+"""
+
+Adjusting agents and model code to represent spring season, where wolves and elk have higher reproduction rate and lower death rate.
+
+In agents code,made it take lower energy than before to die for elk and wolves.
+
+In model code, increased elk_reproduce and wolf_reproduce, and decreased grass time to regrow.
+
+"""
+#model code:
+import mesa
+
+from .agents import GrassPatch, Elk, Wolf, WateringHole
+from .scheduler import RandomActivationByTypeFiltered
+
+
+class WolfElk(mesa.Model):
+    """
+    Wolf-Elk Predation Model
+    """
+
+    height = 50
+    width = 50
+
+    initial_elk = 1700
+    initial_wolves = 14
+
+    elk_reproduce = 0.1
+    wolf_reproduce = 0.11
+
+    wolf_gain_from_food = 20
+
+    grass = False
+    grass_regrowth_time = 20
+    elk_gain_from_food = 4
+    water = True
+
+    verbose = False  # Print-monitoring
+
+    description = (
+        "A model for simulating wolf and sheep (predator-prey) ecosystem modelling."
+    )
+
+    def __init__(
+        self,
+        width=50,
+        height=30,
+        initial_elk=1700,
+        initial_wolves=14,
+        elk_reproduce=0.04,
+        wolf_reproduce=0.05,
+        wolf_gain_from_food=20,
+        grass=False,
+        grass_regrowth_time=30,
+        elk_gain_from_food=4,
+        water=True
+    ):
+        """
+        Create a new Wolf-Elk model with the given parameters.
+
+        Args:
+            initial_elk: Number of sheep to start with
+            initial_wolves: Number of wolves to start with
+            sheep_reproduce: Probability of each sheep reproducing each step
+            wolf_reproduce: Probability of each wolf reproducing each step
+            wolf_gain_from_food: Energy a wolf gains from eating a sheep
+            grass: Whether to have the sheep eat grass for energy
+            grass_regrowth_time: How long it takes for a grass patch to regrow
+                                 once it is eaten
+            elk_gain_from_food: Energy sheep gain from grass, if enabled.
+        """
+        super().__init__()
+        # Set parameters
+        self.width = width
+        self.height = height
+        self.initial_elk = initial_elk
+        self.initial_wolves = initial_wolves
+        self.elk_reproduce = elk_reproduce
+        self.wolf_reproduce = wolf_reproduce
+        self.wolf_gain_from_food = wolf_gain_from_food
+        self.grass = grass
+        self.grass_regrowth_time = grass_regrowth_time
+        self.elk_gain_from_food = elk_gain_from_food
+        self.water = water
+
+        self.schedule = RandomActivationByTypeFiltered(self)
+        self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
+        self.datacollector = mesa.DataCollector(
+            {
+                "Wolves": lambda m: m.schedule.get_type_count(Wolf),
+                "Elk": lambda m: m.schedule.get_type_count(Elk),
+                "Grass": lambda m: m.schedule.get_type_count(
+                    GrassPatch, lambda x: x.fully_grown
+                ),
+            }
+        )
+
+        # Create elk:
+        for i in range(self.initial_elk):
+            x = self.random.randrange(self.width)
+            y = self.random.randrange(self.height)
+            energy = self.random.randrange(2 * self.elk_gain_from_food)
+            elk = Elk(self.next_id(), (x, y), self, True, energy)
+            self.grid.place_agent(elk, (x, y))
+            self.schedule.add(elk)
+
+        # Create wolves
+        for i in range(self.initial_wolves):
+            x = self.random.randrange(self.width)
+            y = self.random.randrange(self.height)
+            energy = self.random.randrange(2 * self.wolf_gain_from_food)
+            wolf = Wolf(self.next_id(), (x, y), self, True, energy)
+            self.grid.place_agent(wolf, (x, y))
+            self.schedule.add(wolf)
+
+        # Create grass patches
+        if self.grass:
+            for agent, (x, y) in self.grid.coord_iter():
+                fully_grown = self.random.choice([True, False])
+
+                if fully_grown:
+                    countdown = self.grass_regrowth_time
+                else:
+                    countdown = self.random.randrange(self.grass_regrowth_time)
+
+                patch = GrassPatch(self.next_id(), (x, y), self, fully_grown, countdown)
+                self.grid.place_agent(patch, (x, y))
+                self.schedule.add(patch)
+                
+        # Create watering holes
+        if self.water:
+            for x in range(0,5):
+                for y in range(0,5):
+          
+                    waterhole = WateringHole(self.next_id(), (x,y), self)
+                    self.grid.place_agent(waterhole, (x,y))
+                    self.schedule.add(waterhole)
+            
+            
+
+        self.running = True
+        self.datacollector.collect(self)
+
+    def step(self):
+        self.schedule.step()
+        # collect data
+        self.datacollector.collect(self)
+        if self.verbose:
+            print(
+                [
+                    self.schedule.time,
+                    self.schedule.get_type_count(Wolf),
+                    self.schedule.get_type_count(Elk),
+                    self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
+                    self.schedule.get_type_count(WateringHole)
+                ]
+            )
+
+    def run_model(self, step_count=200):
+        if self.verbose:
+            print("Initial number wolves: ", self.schedule.get_type_count(Wolf))
+            print("Initial number elk: ", self.schedule.get_type_count(Elk))
+            print(
+                "Initial number grass: ",
+                self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
+            )
+
+        for i in range(step_count):
+            self.step()
+
+        if self.verbose:
+            print("")
+            print("Final number wolves: ", self.schedule.get_type_count(Wolf))
+            print("Final number elk: ", self.schedule.get_type_count(Elk))
+            print(
+                "Final number grass: ",
+                self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
+            )
+
+
+
+#agents code:
+
+import mesa
+
+from .random_walk import RandomWalker
+
+
+class Elk(RandomWalker):
+    """
+    An elk that walks around, reproduces (asexually) and gets eaten.
+
+    The init is the same as the RandomWalker.
+    """
+
+    energy = None
+
+    def __init__(self, unique_id, pos, model, moore, energy=None):
+        super().__init__(unique_id, pos, model, moore=moore)
+        self.energy = energy
+
+    def step(self):
+        """
+        A model step. Move, then eat grass and reproduce.
+        """
+        self.random_move()
+        living = True
+
+        if self.model.grass:
+            # Reduce energy
+            self.energy -= 1
+
+            # If there is grass available, eat it
+            this_cell = self.model.grid.get_cell_list_contents([self.pos])
+            grass_patch = [obj for obj in this_cell if isinstance(obj, GrassPatch)][0]
+            if grass_patch.fully_grown:
+                self.energy += self.model.elk_gain_from_food
+                grass_patch.fully_grown = False
+
+            # Death
+            if self.energy < -2:
+                self.model.grid.remove_agent(self)
+                self.model.schedule.remove(self)
+                living = False
+
+        if living and self.random.random() < self.model.elk_reproduce:
+            # Create a new elk:
+            if self.model.grass:
+                self.energy /= 2
+            calf = Elk(
+                self.model.next_id(), self.pos, self.model, self.moore, self.energy
+            )
+            self.model.grid.place_agent(calf, self.pos)
+            self.model.schedule.add(calf)
+
+
+class Wolf(RandomWalker):
+    """
+    A wolf that walks around, reproduces (asexually) and eats elk.
+    """
+
+    energy = None
+
+    def __init__(self, unique_id, pos, model, moore, energy=None):
+        super().__init__(unique_id, pos, model, moore=moore)
+        self.energy = energy
+
+    def step(self):
+        self.random_move()
+        self.energy -= 1
+
+        # If there are elk present, eat one
+        x, y = self.pos
+        this_cell = self.model.grid.get_cell_list_contents([self.pos])
+        elk = [obj for obj in this_cell if isinstance(obj, Elk)]
+        if len(elk) > 0:
+            elk_to_eat = self.random.choice(elk)
+            self.energy += self.model.wolf_gain_from_food
+
+            # Kill the elk
+            self.model.grid.remove_agent(elk_to_eat)
+            self.model.schedule.remove(elk_to_eat)
+
+        # Death or reproduction
+        if self.energy < -2:
+            self.model.grid.remove_agent(self)
+            self.model.schedule.remove(self)
+        else:
+            if self.random.random() < self.model.wolf_reproduce:
+                # Create a new wolf cub
+                self.energy /= 2
+                cub = Wolf(
+                    self.model.next_id(), self.pos, self.model, self.moore, self.energy
+                )
+                self.model.grid.place_agent(cub, cub.pos)
+                self.model.schedule.add(cub)
+
+
+class GrassPatch(mesa.Agent):
+    """
+    A patch of grass that grows at a fixed rate and it is eaten by elk
+    """
+
+    def __init__(self, unique_id, pos, model, fully_grown, countdown):
+        """
+        Creates a new patch of grass
+
+        Args:
+            grown: (boolean) Whether the patch of grass is fully grown or not
+            countdown: Time for the patch of grass to be fully grown again
+        """
+        super().__init__(unique_id, model)
+        self.fully_grown = fully_grown
+        self.countdown = countdown
+        self.pos = pos
+
+    def step(self):
+        if not self.fully_grown:
+            if self.countdown <= 0:
+                # Set as fully grown
+                self.fully_grown = True
+                self.countdown = self.model.grass_regrowth_time
+            else:
+                self.countdown -= 1
