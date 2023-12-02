@@ -26,13 +26,13 @@ class WolfElk(mesa.Model):
     initial_elk = 100
     initial_wolves = 50
 
-    elk_reproduce = 0.1
-    wolf_reproduce = 0.11
+    elk_reproduce = 0.01
+    wolf_reproduce = 0.02
 
     wolf_gain_from_food = 20
 
     grass = False
-    grass_regrowth_time = 10
+    grass_regrowth_time = 50
     elk_gain_from_food = 4
 
     verbose = False  # Print-monitoring
@@ -47,11 +47,11 @@ class WolfElk(mesa.Model):
         height=20,
         initial_elk=100,
         initial_wolves=50,
-        elk_reproduce=0.1,
-        wolf_reproduce=0.11,
+        elk_reproduce=0.01,
+        wolf_reproduce=0.02,
         wolf_gain_from_food=20,
         grass=False,
-        grass_regrowth_time=10,
+        grass_regrowth_time=50,
         elk_gain_from_food=4,
     ):
         """

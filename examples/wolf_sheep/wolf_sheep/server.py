@@ -17,8 +17,8 @@ def wolf_elk_portrayal(agent):
         portrayal["Layer"] = 2
 
     elif type(agent) is Wolf:
-        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
-        # https://icons8.com/web-app/36821/German-Shepherd
+        portrayal["Shape"] = "wolf_sheep/resources/icons8-wolf-48.png"
+        # https://icons8.com/icon/48/wolf
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 2
         portrayal["text"] = round(agent.energy, 1)
@@ -26,9 +26,9 @@ def wolf_elk_portrayal(agent):
 
     elif type(agent) is GrassPatch:
         if agent.fully_grown:
-            portrayal["Color"] = ["#FF3399", "#FF007F", "#CC0066"]
+            portrayal["Color"] = ["#0000ff", "#1414ff", "#2727ff"]
         else:
-            portrayal["Color"] = ["#FFCCE5", "#FF99CC", "#FFCCFF"]
+            portrayal["Color"] = ["#6262ff", "#7676ff", "#8989ff"]
         portrayal["Shape"] = "rect"
         portrayal["Filled"] = "true"
         portrayal["Layer"] = 0
@@ -43,7 +43,7 @@ chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Wolves", "Color": "#AA0000"},
         {"Label": "Elk", "Color": "#666666"},
-        {"Label": "Grass", "Color": "#FFCCE5"},
+        {"Label": "Grass", "Color": "#0000ff"},
     ]
 )
 
