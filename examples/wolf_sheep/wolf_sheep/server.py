@@ -51,7 +51,6 @@ chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Wolves", "Color": "#AA0000"},
         {"Label": "Elk", "Color": "#666666"},
-        {"Label": "Grass", "Color": "#00AA00"},
     ]
 )
 
@@ -62,7 +61,7 @@ model_params = {
     "water": mesa.visualization.Checkbox("Water Enabled", True),
     "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
     "initial_elk": mesa.visualization.Slider(
-        "Initial Elk Population", 1700, 10, 2000
+        "Initial Elk Population", 17000, 10, 20000
     ),
     "elk_reproduce": mesa.visualization.Slider(
         "Elk Reproduction Rate", 0.04, 0.01, 1.0, 0.01
