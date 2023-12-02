@@ -35,7 +35,7 @@ class Elk(RandomWalker):
                 grass_patch.fully_grown = False
 
             # Death
-            if self.energy < -2:
+            if self.energy < 0:
                 self.model.grid.remove_agent(self)
                 self.model.schedule.remove(self)
                 living = False
@@ -79,7 +79,7 @@ class Wolf(RandomWalker):
             self.model.schedule.remove(elk_to_eat)
 
         # Death or reproduction
-        if self.energy < -2:
+        if self.energy < 0:
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
         else:
