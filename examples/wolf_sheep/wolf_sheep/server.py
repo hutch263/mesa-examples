@@ -63,12 +63,12 @@ model_params = {
     "water": mesa.visualization.Checkbox("Water Enabled", True),
     "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
     "initial_elk": mesa.visualization.Slider(
-        "Initial Elk Population", 1700, 10, 2000
+        "Initial Elk Population", 2000, 0, 20000
     ),
     "elk_reproduce": mesa.visualization.Slider(
         "Elk Reproduction Rate", 0.04, 0.01, 1.0, 0.01
     ),
-    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", 14, 5, 300),
+    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", 2, 0, 300),
     "wolf_reproduce": mesa.visualization.Slider(
         "Wolf Reproduction Rate",
         0.05,
