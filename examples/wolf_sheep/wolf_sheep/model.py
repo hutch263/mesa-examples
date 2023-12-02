@@ -32,8 +32,8 @@ class WolfElk(mesa.Model):
     wolf_gain_from_food = 20
 
     grass = False
-    grass_regrowth_time = 50
-    sheep_gain_from_food = 4
+    grass_regrowth_time = 10
+    elk_gain_from_food = 4
 
     verbose = False  # Print-monitoring
 
@@ -51,7 +51,7 @@ class WolfElk(mesa.Model):
         wolf_reproduce=0.11,
         wolf_gain_from_food=20,
         grass=False,
-        grass_regrowth_time=50,
+        grass_regrowth_time=10,
         sheep_gain_from_food=4,
     ):
         """
