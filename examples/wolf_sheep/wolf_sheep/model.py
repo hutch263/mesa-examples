@@ -20,11 +20,11 @@ class WolfElk(mesa.Model):
     Wolf-Elk Predation Model
     """
 
-    height = 50
+    height = 30
     width = 50
 
-    initial_elk = 1700
-    initial_wolves = 14
+    initial_elk = 5667
+    initial_wolves = 5
 
     elk_reproduce = 0.04
     wolf_reproduce = 0.05
@@ -46,8 +46,8 @@ class WolfElk(mesa.Model):
         self,
         width=50,
         height=30,
-        initial_elk=1700,
-        initial_wolves=14,
+        initial_elk=5667,
+        initial_wolves=5,
         elk_reproduce=0.04,
         wolf_reproduce=0.05,
         wolf_gain_from_food=20,
