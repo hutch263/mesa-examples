@@ -18,8 +18,8 @@ def wolf_elk_portrayal(agent):
         portrayal["Layer"] = 2
 
     elif type(agent) is Wolf:
-        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
-        # https://icons8.com/web-app/36821/German-Shepherd
+        portrayal["Shape"] = "wolf_sheep/resources/icons8-wolf-48.png"
+        # https://icons8.com/icon/48/wolf
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 3
         portrayal["text"] = round(agent.energy, 1)
