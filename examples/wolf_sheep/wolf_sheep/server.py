@@ -11,14 +11,14 @@ def wolf_sheep_portrayal(agent):
     portrayal = {}
 
     if type(agent) is Sheep:
-        portrayal["Shape"] = "wolf_sheep/resources/sheep.png"
-        # https://icons8.com/web-app/433/sheep
+        portrayal["Shape"] = "wolf_sheep/resources/icons8-deer-50.png"
+        # https://icons8.com/web-app/433/deer
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 1
 
     elif type(agent) is Wolf:
-        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
-        # https://icons8.com/web-app/36821/German-Shepherd
+        portrayal["Shape"] = "wolf_sheep/resources/icons8-wolf-48.png"
+        # https://icons8.com/web-app/36821/wolf
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 2
         portrayal["text"] = round(agent.energy, 1)
