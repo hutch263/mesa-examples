@@ -27,15 +27,15 @@ class WolfElk(mesa.Model):
     initial_elk = 1700
     initial_wolves = 14
 
-    elk_reproduce = 0.04
-    wolf_reproduce = 0.05
+    elk_reproduce = 0.1
+    wolf_reproduce = 0.11
 
 
     wolf_gain_from_food = 20
 
     grass = False
 
-    grass_regrowth_time = 30
+    grass_regrowth_time = 10
     elk_gain_from_food = 4
     water = True
 
@@ -51,11 +51,11 @@ class WolfElk(mesa.Model):
         height=30,
         initial_elk=1700,
         initial_wolves=14,
-        elk_reproduce=0.04,
-        wolf_reproduce=0.05,
+        elk_reproduce=0.1,
+        wolf_reproduce=0.11,
         wolf_gain_from_food=20,
         grass=False,
-        grass_regrowth_time=30,
+        grass_regrowth_time=10,
         elk_gain_from_food=4,
         water=True
 
