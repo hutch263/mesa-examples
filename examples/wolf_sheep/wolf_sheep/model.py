@@ -11,7 +11,8 @@ Replication of the model found in NetLogo:
 
 import mesa
 
-from .agents import GrassPatch, Elk, Wolf
+from .agents import GrassPatch, Elk, Wolf, WateringHole
+
 from .scheduler import RandomActivationByTypeFiltered
 
 
@@ -20,49 +21,55 @@ class WolfElk(mesa.Model):
     Wolf-Elk Predation Model
     """
 
-    height = 20
-    width = 20
+    height = 50
+    width = 50
 
-    initial_elk = 100
-    initial_wolves = 50
+    initial_elk = 1700
+    initial_wolves = 14
 
-    elk_reproduce = 0.1
-    wolf_reproduce = 0.11
+    elk_reproduce = 0.04
+    wolf_reproduce = 0.05
+
 
     wolf_gain_from_food = 20
 
     grass = False
-    grass_regrowth_time = 10
+
+    grass_regrowth_time = 30
     elk_gain_from_food = 4
+    water = True
 
     verbose = False  # Print-monitoring
 
     description = (
-        "A model for simulating wolf and sheep (predator-prey) ecosystem modelling."
+        "A model for simulating wolf and elk (predator-prey) ecosystem modelling."
     )
 
     def __init__(
         self,
-        width=20,
-        height=20,
-        initial_elk=100,
-        initial_wolves=50,
-        elk_reproduce=0.1,
-        wolf_reproduce=0.11,
+        width=50,
+        height=30,
+        initial_elk=1700,
+        initial_wolves=14,
+        elk_reproduce=0.04,
+        wolf_reproduce=0.05,
         wolf_gain_from_food=20,
         grass=False,
-        grass_regrowth_time=10,
+        grass_regrowth_time=30,
         elk_gain_from_food=4,
+        water=True
+
     ):
         """
         Create a new Wolf-Elk model with the given parameters.
 
         Args:
-            initial_elk: Number of elk to start with
+
+            initial_elk: Number of sheep to start with
             initial_wolves: Number of wolves to start with
             elk_reproduce: Probability of each elk reproducing each step
             wolf_reproduce: Probability of each wolf reproducing each step
-            wolf_gain_from_food: Energy a wolf gains from eating an elk
+            wolf_gain_from_food: Energy a wolf gains from eating a sheep
             grass: Whether to have the elk eat grass for energy
             grass_regrowth_time: How long it takes for a grass patch to regrow
                                  once it is eaten
@@ -80,6 +87,8 @@ class WolfElk(mesa.Model):
         self.grass = grass
         self.grass_regrowth_time = grass_regrowth_time
         self.elk_gain_from_food = elk_gain_from_food
+        self.water = water
+
 
         self.schedule = RandomActivationByTypeFiltered(self)
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
@@ -124,6 +133,24 @@ class WolfElk(mesa.Model):
                 patch = GrassPatch(self.next_id(), (x, y), self, fully_grown, countdown)
                 self.grid.place_agent(patch, (x, y))
                 self.schedule.add(patch)
+                
+        # Create watering holes
+        if self.water:
+            for x in range(0,5):
+                for y in range(0,7):
+          
+                    waterhole = WateringHole(self.next_id(), (x,y), self)
+                    self.grid.place_agent(waterhole, (x,y))
+                    self.schedule.add(waterhole)
+                    
+            for x in range(45,50):
+                for y in range(22,30):
+          
+                    waterhole = WateringHole(self.next_id(), (x,y), self)
+                    self.grid.place_agent(waterhole, (x,y))
+                    self.schedule.add(waterhole)
+            
+            
 
         self.running = True
         self.datacollector.collect(self)
@@ -139,6 +166,7 @@ class WolfElk(mesa.Model):
                     self.schedule.get_type_count(Wolf),
                     self.schedule.get_type_count(Elk),
                     self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
+                    self.schedule.get_type_count(WateringHole)
                 ]
             )
 
