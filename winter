@@ -1,18 +1,15 @@
 """
 
-Adjusting model, server, and agents code to represent winter season, where reproduction rates decrease a lot and death rates increase, grass takes longer to regrow, and water freezes over. 
+Adjusting agents, server, and model code to represent spring season, where wolves and elk have higher reproduction rate and lower death rate.
 
-In model code: decreased elk_reproduce and wolf_reproduce, increased grass regrowth time, changed water arguments to False
+In agents code,made it take lower energy than before to die for elk and wolves.
 
-In agents code: increased death rates of elk and wolves
+In model code, increased elk_reproduce and wolf_reproduce, and decreased grass time to regrow.
 
-In server code: changed grass colors to blues
-
+In server code, make grass pink to make spring visually apparent.
 
 """
-
 #model code:
-
 import mesa
 
 from .agents import GrassPatch, Elk, Wolf, WateringHole
@@ -30,15 +27,15 @@ class WolfElk(mesa.Model):
     initial_elk = 1700
     initial_wolves = 14
 
-    elk_reproduce = 0.01
-    wolf_reproduce = 0.02
+    elk_reproduce = 0.1
+    wolf_reproduce = 0.11
 
     wolf_gain_from_food = 20
 
     grass = False
-    grass_regrowth_time = 50
+    grass_regrowth_time = 20
     elk_gain_from_food = 4
-    water = False
+    water = True
 
     verbose = False  # Print-monitoring
 
@@ -58,7 +55,7 @@ class WolfElk(mesa.Model):
         grass=False,
         grass_regrowth_time=30,
         elk_gain_from_food=4,
-        water=False
+        water=True
     ):
         """
         Create a new Wolf-Elk model with the given parameters.
@@ -182,7 +179,98 @@ class WolfElk(mesa.Model):
                 self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
             )
 
+#server code
+from wolf_sheep.agents import GrassPatch, Elk, Wolf, WateringHole
+from wolf_sheep.model import WolfElk
+
+
+def wolf_elk_portrayal(agent):
+    if agent is None:
+        return
+
+    portrayal = {}
+
+    if type(agent) is Elk:
+        portrayal["Shape"] = "wolf_sheep/resources/icons8-deer-50.png"
+        # https://icons8.com/icon/5038/deer
+        portrayal["scale"] = 0.9
+        portrayal["Layer"] = 2
+
+    elif type(agent) is Wolf:
+        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
+        # https://icons8.com/web-app/36821/German-Shepherd
+        portrayal["scale"] = 0.9
+        portrayal["Layer"] = 3
+        portrayal["text"] = round(agent.energy, 1)
+        portrayal["text_color"] = "White"
+
+    elif type(agent) is GrassPatch:
+        if agent.fully_grown:
+            portrayal["Color"] = ["#FF3399", "#FF007F", "#CC0066"]
+        else:
+            portrayal["Color"] = ["#FFCCE5", "#FF99CC", "#FFCCFF"]
+        portrayal["Shape"] = "rect"
+        portrayal["Filled"] = "true"
+        portrayal["Layer"] = 0
+        portrayal["w"] = 1
+        portrayal["h"] = 1
+        
+    elif type(agent) is WateringHole:
+        portrayal["Color"] = ["#728cff"]
+        portrayal["Shape"] = "rect"
+        portrayal["Filled"] = "true"
+        portrayal["Layer"] = 1
+        portrayal["w"] = 1
+        portrayal["h"] = 1
+
+    return portrayal
+
+
+canvas_element = mesa.visualization.CanvasGrid(wolf_elk_portrayal, 50, 30, 1000, 600)
+chart_element = mesa.visualization.ChartModule(
+    [
+        {"Label": "Wolves", "Color": "#AA0000"},
+        {"Label": "Elk", "Color": "#666666"},
+        {"Label": "Grass", "Color": "#FF66B2"},
+    ]
+)
+
+model_params = {
+    # The following line is an example to showcase StaticText.
+    "title": mesa.visualization.StaticText("Parameters:"),
+    "grass": mesa.visualization.Checkbox("Grass Enabled", True),
+    "water": mesa.visualization.Checkbox("Water Enabled", True),
+    "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
+    "initial_elk": mesa.visualization.Slider(
+        "Initial Elk Population", 1700, 10, 2000
+    ),
+    "elk_reproduce": mesa.visualization.Slider(
+        "Elk Reproduction Rate", 0.04, 0.01, 1.0, 0.01
+    ),
+    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", 14, 5, 300),
+    "wolf_reproduce": mesa.visualization.Slider(
+        "Wolf Reproduction Rate",
+        0.05,
+        0.01,
+        1.0,
+        0.01,
+        description="The rate at which wolf agents reproduce.",
+    ),
+    "wolf_gain_from_food": mesa.visualization.Slider(
+        "Wolf Gain From Food Rate", 20, 1, 50
+    ),
+    "elk_gain_from_food": mesa.visualization.Slider("Elk Gain From Food", 4, 1, 10),
+}
+
+server = mesa.visualization.ModularServer(
+    WolfElk, [canvas_element, chart_element], "Wolf Elk Predation", model_params
+)
+server.port = 8521
+
 #agents code:
+
+import mesa
+
 from .random_walk import RandomWalker
 
 
@@ -218,7 +306,7 @@ class Elk(RandomWalker):
                 grass_patch.fully_grown = False
 
             # Death
-            if self.energy < 2:
+            if self.energy < -2:
                 self.model.grid.remove_agent(self)
                 self.model.schedule.remove(self)
                 living = False
@@ -262,7 +350,7 @@ class Wolf(RandomWalker):
             self.model.schedule.remove(elk_to_eat)
 
         # Death or reproduction
-        if self.energy < 2:
+        if self.energy < -2:
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
         else:
@@ -302,92 +390,3 @@ class GrassPatch(mesa.Agent):
                 self.countdown = self.model.grass_regrowth_time
             else:
                 self.countdown -= 1
-
-#server code:
-
-from wolf_sheep.agents import GrassPatch, Elk, Wolf, WateringHole
-from wolf_sheep.model import WolfElk
-
-
-def wolf_elk_portrayal(agent):
-    if agent is None:
-        return
-
-    portrayal = {}
-
-    if type(agent) is Elk:
-        portrayal["Shape"] = "wolf_sheep/resources/icons8-deer-50.png"
-        # https://icons8.com/icon/5038/deer
-        portrayal["scale"] = 0.9
-        portrayal["Layer"] = 2
-
-    elif type(agent) is Wolf:
-        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
-        # https://icons8.com/web-app/36821/German-Shepherd
-        portrayal["scale"] = 0.9
-        portrayal["Layer"] = 3
-        portrayal["text"] = round(agent.energy, 1)
-        portrayal["text_color"] = "White"
-
-    elif type(agent) is GrassPatch:
-        if agent.fully_grown:
-            portrayal["Color"] = ["#1f75fe", "#0087bd", "#72a0c1"]
-        else:
-            portrayal["Color"] = ["#f0fBff", "#aceSee", "#a1caf1"]
-        portrayal["Shape"] = "rect"
-        portrayal["Filled"] = "true"
-        portrayal["Layer"] = 0
-        portrayal["w"] = 1
-        portrayal["h"] = 1
-        
-    elif type(agent) is WateringHole:
-        portrayal["Color"] = ["#728cff"]
-        portrayal["Shape"] = "rect"
-        portrayal["Filled"] = "true"
-        portrayal["Layer"] = 1
-        portrayal["w"] = 1
-        portrayal["h"] = 1
-
-    return portrayal
-
-
-canvas_element = mesa.visualization.CanvasGrid(wolf_elk_portrayal, 50, 30, 1000, 600)
-chart_element = mesa.visualization.ChartModule(
-    [
-        {"Label": "Wolves", "Color": "#AA0000"},
-        {"Label": "Elk", "Color": "#666666"},
-        {"Label": "Grass", "Color": "blue"},
-    ]
-)
-
-model_params = {
-    # The following line is an example to showcase StaticText.
-    "title": mesa.visualization.StaticText("Parameters:"),
-    "grass": mesa.visualization.Checkbox("Grass Enabled", True),
-    "water": mesa.visualization.Checkbox("Water Enabled", True),
-    "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
-    "initial_elk": mesa.visualization.Slider(
-        "Initial Elk Population", 1700, 10, 2000
-    ),
-    "elk_reproduce": mesa.visualization.Slider(
-        "Elk Reproduction Rate", 0.04, 0.01, 1.0, 0.01
-    ),
-    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", 14, 5, 300),
-    "wolf_reproduce": mesa.visualization.Slider(
-        "Wolf Reproduction Rate",
-        0.05,
-        0.01,
-        1.0,
-        0.01,
-        description="The rate at which wolf agents reproduce.",
-    ),
-    "wolf_gain_from_food": mesa.visualization.Slider(
-        "Wolf Gain From Food Rate", 20, 1, 50
-    ),
-    "elk_gain_from_food": mesa.visualization.Slider("Elk Gain From Food", 4, 1, 10),
-}
-
-server = mesa.visualization.ModularServer(
-    WolfElk, [canvas_element, chart_element], "Wolf Elk Predation", model_params
-)
-server.port = 8521
