@@ -52,7 +52,7 @@ chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Wolves", "Color": "#AA0000"},
         {"Label": "Elk", "Color": "#666666"},
-        {"Label": "Grass", "Color": "#FFCCE5"},
+        {"Label": "Grass", "Color": "#FF3399"},
 
     ]
 )
