@@ -19,6 +19,10 @@ from .scheduler import RandomActivationByTypeFiltered
 class WolfElk(mesa.Model):
     """
     Wolf-Elk Predation Model
+
+    Decreased both elk and wolf reproduction rates to match less birth in winter.
+
+    Increased amount of time it takes for grass to regrow (slower grass growth in winter).
     """
 
     height = 50
@@ -27,6 +31,10 @@ class WolfElk(mesa.Model):
     initial_elk = 1700
     initial_wolves = 14
 
+    # decreased both elk and wolf reproduction rates
+    # changed elk reproduction rate from 0.04 to 0.01
+    # changed wolf reproduction rate from 0.05 to 0.02
+    # maintained wolf reproduction rate being higher than elk
     elk_reproduce = 0.01
     wolf_reproduce = 0.02
 
@@ -34,6 +42,7 @@ class WolfElk(mesa.Model):
 
     grass = False
 
+    # increased grass regrowth time from 30 to 50
     grass_regrowth_time = 50
     elk_gain_from_food = 4
     water = True
