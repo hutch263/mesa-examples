@@ -74,6 +74,9 @@ class Wolf(RandomWalker):
         self.energy = energy
 
     def step(self):
+        """
+        A model step. Move, attempt to eat elk and reproduce.
+        """
         self.random_move()
         self.energy -= 1
         

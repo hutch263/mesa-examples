@@ -10,6 +10,7 @@ def wolf_elk_portrayal(agent):
 
     portrayal = {}
 
+
     if type(agent) is Elk:
         portrayal["Shape"] = "wolf_sheep/resources/icons8-deer-50.png"
         # https://icons8.com/icon/5038/deer
@@ -17,8 +18,8 @@ def wolf_elk_portrayal(agent):
         portrayal["Layer"] = 2
 
     elif type(agent) is Wolf:
-        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
-        # https://icons8.com/web-app/36821/German-Shepherd
+        portrayal["Shape"] = "wolf_sheep/resources/icons8-wolf-48.png"
+        # https://icons8.com/web-app/36821/wolf
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 3
         portrayal["text"] = round(agent.energy, 1)
@@ -62,12 +63,12 @@ model_params = {
     "water": mesa.visualization.Checkbox("Water Enabled", True),
     "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
     "initial_elk": mesa.visualization.Slider(
-        "Initial Elk Population", 1700, 10, 2000
+        "Initial Elk Population", 2000, 0, 20000
     ),
     "elk_reproduce": mesa.visualization.Slider(
         "Elk Reproduction Rate", 0.04, 0.01, 1.0, 0.01
     ),
-    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", 14, 5, 300),
+    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", 2, 0, 300),
     "wolf_reproduce": mesa.visualization.Slider(
         "Wolf Reproduction Rate",
         0.05,

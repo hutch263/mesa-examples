@@ -35,15 +35,20 @@ class RandomWalker(mesa.Agent):
         self.pos = pos
         self.moore = moore
         self.target_location_1 = target_location_1
-        self.target_location_2 = target_location_2
-        
+        self.target_location_2 = target_location_2        
         
     def calculate_distance(self, point1, point2):
+        """
+        calculates the distance between two given points
+        """
         x1, y1 = point1
         x2, y2 = point2
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     
     def find_closest_neighbor(self, agent_position, neighborhood):
+        """
+        determines which neighboring cell to an agent is closest to the nearest watering hole
+        """
         closest_neighbor = None
         min_distance = float('inf')  # Initialize with a large value
 
@@ -63,6 +68,7 @@ class RandomWalker(mesa.Agent):
     def random_move(self):
         """
         Step one cell in any allowable direction.
+        If far from a watering hole, increased chance the agent moves back towards the nearest watering hole
         """
         # Pick the next cell from the adjacent cells.
         next_moves = self.model.grid.get_neighborhood(self.pos, self.moore, True)
@@ -91,49 +97,6 @@ class RandomWalker(mesa.Agent):
 # first by ascribing how they move with RandomWalker, then wolf and sheep inherit the attributes of an agent and 
 # walking pattern from random walker so the sub class tree goes mesa.Agent -> RandomWalker -> wolf/sheep, and that's why
 # the grass just inherits mesa.Agent because it doesn't need to move
-# -
 
-# #If we wanted to implement movement towards watering holes
-# # little worried about the reel life application - what is our justification for doing this mathmatically?
-# import math
-#
-# # Define the target location
-# target_location = (0,0) # location of watering hole in bottom left corner
-#
-# # Function to calculate Euclidean distance between two points
-# def calculate_distance(point1, point2):
-#     x1, y1 = point1
-#     x2, y2 = point2
-#     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-#
-# # Example function to find the closest neighboring cell to the target location
-# def find_closest_neighbor(agent_position, neighborhood):  #neighborhood would be next moves from above?
-#     closest_neighbor = None
-#     min_distance = float('inf')  # Initialize with a large value
-#
-#     for neighbor_cell in neighborhood:
-#         distance_to_target = calculate_distance(neighbor_cell, target_location)
-#         if distance_to_target < min_distance:
-#             min_distance = distance_to_target
-#             closest_neighbor = neighbor_cell
-#
-#     return closest_neighbor
-#
-# # wouldn't need this but would use closest_neighbor_to_target in random_move method above
-# # I'm thinking we give it some probabillity it moves towards watering hole?
-# # Example agent's position
-# agent_position = (3, 4)  # Example agent's position coordinates
-#
-# # Example agent's neighborhood (can be obtained depending on the grid system or neighborhood definition)
-# neighborhood = [(2, 4), (4, 4), (3, 3), (3, 5)]  # Example neighboring cells
-#
-# # Find the closest neighbor to the target location
-# closest_neighbor_to_target = find_closest_neighbor(agent_position, neighborhood)
-#
-# if closest_neighbor_to_target:
-#     print(f"The closest neighboring cell to the target location is {closest_neighbor_to_target}.")
-# else:
-#     print("No neighboring cell found.")
-#     
-# # from GPT 3.5, prompt: is there a way to ask if one of neighborhood is closer to a specific location on the grid?
-# # Accessed 11/22/23, chat.openai.com
+# from GPT 3.5, prompt: is there a way to ask if one of neighborhood is closer to a specific location on the grid?
+# Accessed 11/22/23, chat.openai.com
