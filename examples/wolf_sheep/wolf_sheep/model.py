@@ -165,6 +165,13 @@ class WolfElk(mesa.Model):
             )
 
     def run_model(self, step_count=200):
+        '''
+        Runs the model for 200 steps and returns the counts of wolves, elk, and grass 
+        at the inital and final steps if the verbose parameter is set to True
+        
+        Args:
+        step_count: The number of steps to run the model and get output for
+        '''
         if self.verbose:
             print("Initial number wolves: ", self.schedule.get_type_count(Wolf))
             print("Initial number elk: ", self.schedule.get_type_count(Elk))

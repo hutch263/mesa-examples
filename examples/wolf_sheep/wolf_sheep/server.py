@@ -5,6 +5,13 @@ from wolf_sheep.model import WolfElk
 
 
 def wolf_elk_portrayal(agent):
+    '''
+    Determines the graphic portralal of the board as a whole as well as 
+    how the parameter adjustemnt sliders are displayed. 
+    
+    Colors for the water and grass for the baseline model are also defined 
+    as well as the icons for the wolves and elk.
+    '''
     if agent is None:
         return
 

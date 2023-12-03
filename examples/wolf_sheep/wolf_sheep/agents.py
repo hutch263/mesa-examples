@@ -85,7 +85,7 @@ class Wolf(RandomWalker):
         this_cell = self.model.grid.get_cell_list_contents([self.pos])
         elk = [obj for obj in this_cell if isinstance(obj, Elk)]
 
-        if len(elk) > 0: # if an elk is in the same cell as a wolf, check the wolf eats elk probability
+        if len(elk) > 0: # if an elk is in the same cell as a wolf, check if wolf eats elk
             elk_to_eat = self.random.choice(elk)
 
             
@@ -100,7 +100,7 @@ class Wolf(RandomWalker):
                 self.model.grid.remove_agent(elk_to_eat)
                 self.model.schedule.remove(elk_to_eat)
             else:
-                # Wolf moves away a random number of spaces and loses energy for failure to eat elk
+                # Wolf moves away a random number of spaces and loses energy 
                 self.random_move()
                 self.energy -= 1
                 
@@ -147,6 +147,14 @@ class GrassPatch(mesa.Agent):
                 self.countdown -= 1
 class WateringHole(mesa.Agent):
     def __init__(self, unique_id, pos, model):
+        """
+        Creates a watering hole
+
+        Args:
+            unique_id: the color id for the watering hole
+            pos: x,y coordinate positions to place a part of the watering hole
+            model: the predator/prey model in which the water is being placed
+        """
         
         super().__init__(unique_id, model)
         self.pos=pos
