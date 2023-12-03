@@ -62,11 +62,12 @@ class Elk(RandomWalker):
 
 class Wolf(RandomWalker):
     """
-    A wolf that walks around, reproduces (asexually) and eats elk.
+    A wolf that walks around, reproduces (asexually) and eats elk in the same 
+    cell given that a random probability is less than a set treshold value.
     """
 
     energy = None
-    threshold = 0.5
+    threshold = 0.5 # treshold value for wolf eats elk probability check
 
     def __init__(self, unique_id, pos, model, moore, energy=None):
         super().__init__(unique_id, pos, model, moore=moore)
@@ -81,20 +82,22 @@ class Wolf(RandomWalker):
         this_cell = self.model.grid.get_cell_list_contents([self.pos])
         elk = [obj for obj in this_cell if isinstance(obj, Elk)]
 
-        if len(elk) > 0:
+        if len(elk) > 0: # if an elk is in the same cell as a wolf, check the wolf eats elk probability
             elk_to_eat = self.random.choice(elk)
 
+            
             # Check probability of eating the elk
-            wolf_eats_prob = self.random.random()
+            wolf_eats_prob = self.random.random() 
+            
             if wolf_eats_prob < self.threshold:
-                # Wolf eats the elk
+                # Wolf eats the elk and gains energy
                 self.energy += self.model.wolf_gain_from_food
 
                 # Kill the elk
                 self.model.grid.remove_agent(elk_to_eat)
                 self.model.schedule.remove(elk_to_eat)
             else:
-                # Wolf moves away a random number of spaces
+                # Wolf moves away a random number of spaces and loses energy for failure to eat elk
                 self.random_move()
                 self.energy -= 1
                 
