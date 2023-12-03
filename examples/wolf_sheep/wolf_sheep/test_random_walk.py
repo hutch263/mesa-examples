@@ -1,6 +1,6 @@
 """
 Testing the RandomWalker by having an ABM composed only of random walker
-agents.
+agents. Not used in our project
 """
 
 from mesa import Model
