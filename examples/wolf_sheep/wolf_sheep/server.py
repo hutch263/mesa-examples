@@ -6,6 +6,12 @@ from wolf_sheep.model import WolfElk
 
 
 def wolf_elk_portrayal(agent):
+    """
+    Changed grass color for winter from green to blue.
+    Grass color defined by spectrum of 6 colors (3 fully grown, 3 not fully grown).
+    Blue colors pulled as RGB values.
+
+    """
     if agent is None:
         return
 
@@ -26,6 +32,9 @@ def wolf_elk_portrayal(agent):
         portrayal["text_color"] = "White"
 
     elif type(agent) is GrassPatch:
+	# color values now blue RGB values
+	# if fully grown, grass is darker blue
+	# if not fully grown, grass is lighter blue
         if agent.fully_grown:
             portrayal["Color"] = ["#0000ff", "#1414ff", "#2727ff"]
         else:
@@ -48,6 +57,7 @@ def wolf_elk_portrayal(agent):
 
 canvas_element = mesa.visualization.CanvasGrid(wolf_elk_portrayal, 50, 30, 1000, 600)
 
+#made grass chart element also blue
 chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Wolves", "Color": "#AA0000"},
