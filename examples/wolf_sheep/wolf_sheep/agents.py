@@ -19,6 +19,10 @@ class Elk(RandomWalker):
     def step(self):
         """
         A model step. Move, then eat grass and reproduce.
+
+	Changed death code so that death happens when energy is less thatn -2 instead of less than 0.
+	Represents death rates decreasing in the spring as food becomes more available, etc.
+
         """
         self.random_move()
         living = True
@@ -35,6 +39,8 @@ class Elk(RandomWalker):
                 grass_patch.fully_grown = False
 
             # Death
+	    # takes a greater loss of energy than baseline to die
+            # therefore elk less likely to die in the spring
             if self.energy < -2:
                 self.model.grid.remove_agent(self)
                 self.model.schedule.remove(self)
@@ -63,6 +69,10 @@ class Elk(RandomWalker):
 class Wolf(RandomWalker):
     """
     A wolf that walks around, reproduces (asexually) and eats elk.
+
+    Changed death code so that death happens when energy is less thatn -2 instead of less than 0.
+        Represents death rates decreasing in the spring as food becomes more available, etc.
+
     """
 
     energy = None
@@ -99,6 +109,8 @@ class Wolf(RandomWalker):
                 self.energy -= 1
                 
         # Death or reproduction
+	# if energy is less than -2 rather than 0
+	# same as change to elk agent
         if self.energy < -2:
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
