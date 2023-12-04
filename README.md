@@ -1,15 +1,28 @@
 # Directions
 
-This repo also contains a package that readily lets you import and run some of the examples:
-This is a forked respository from the orginal mesa library that contains many examples. Our work editting scripts is in: examples -> wolf_sheep -> wolf_sheep. We edited.... 
+This is a forked respository from the orginal mesa library that contains many examples. Our work editing scripts is in: examples -> wolf_sheep -> wolf_sheep. 
 
-```console
-$ # This will install the "mesa_models" package
-$ pip install -U -e git+https://github.com/projectmesa/mesa-examples#egg=mesa-models
-```
-```python
-from mesa_models.boltzmann_wealth_model.model import BoltzmannWealthModel
-```
+We edited:
+* the random_walk script such that movement now occurs not randomly but rather largely towards watering holes
+* all scripts to include watering holes that wolves and elk could gain energy from
+* the probability that a given wolf kills an elk if they end up in the same cell to be not 100%
+* two branches of the code to include spring (the sarah_mesa branch) and winter (the winter_version branch) seasonal changes
+
+To run the code, run the following commands after cloning the repository:
+1. pip install -r requirements.txt
+2. cd mesa-examples/examples/wolf_sheep
+3. mesa runserver
+
+To run the spring code, run the following commands:
+1. git checkout sarah_mesa
+2. cd mesa-examples/examples/wolf_sheep
+3. mesa runserver
+
+To run the winter code, run the following commands:
+1. git checkout winter_version
+2. cd mesa-examples/examples/wolf_sheep
+3. mesa runserver
+
 # Member Contributions
 
   * Kaitlyn: took notes for project discussion and planning notebook, made skeleton code(? pass) to brainstorm how we wanted to attempt making classes, researched plants that we could add to model/how they may be affected by elk, prepared notes on random walk script for group meeting 11/22, changed movement of elk and wolves so not random - stay mostly within range of watering holes, created mesa slides, helped direct tasks for group
