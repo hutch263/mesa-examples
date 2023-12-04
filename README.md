@@ -8,6 +8,9 @@ We edited:
 * the probability that a given wolf kills an elk if they end up in the same cell to be not 100%
 * two branches of the code to include spring (the sarah_mesa branch) and winter (the winter_version branch) seasonal changes
 
+To install mesa, follow the directions on the mesa tutorial website under "Tutorial Setup": 
+* https://mesa.readthedocs.io/en/stable/tutorials/intro_tutorial.html 
+
 To run the code, run the following commands after cloning the repository:
 1. pip install -r requirements.txt
 2. cd mesa-examples/examples/wolf_sheep
@@ -29,7 +32,7 @@ To run the winter code, run the following commands:
   * Sarah: Created original presentations and presentation outlines, got working example of original unchanged mesa code, researched statistics for wolves overall, researched statistics for wolf and elk reproduction across season, created branch sarah_mesa that contained spring code, made changes to the code to reflect spring changes, created winter_version branch and made changes to the code to reflect winter changes, placed spring and winter changes in context for presentation.
   * Aleeza: Created initial abm of a predator-prey model in first project phase (without ant movement functionality; simply randomly placed the 3 species on the board; this project was abandoned for mesa. For next project phase (involving mesa), added probability that wolf kills elk in same cell to be random inside the Wolf class, aided in watering hole placement/energy addition
   * Liv: game board sizing, change initial starting values, watering hole placement and energy addition, elk and wolf icons
-  * Sydney: background and content understanding, abstract, project planning and setup, watering hole addition, ecological significance/accuracy
+  * Sydney: Created and assisted the project planning and set up, made sure that all group members had efficient understanding of the content and important ecological considerations, contributed to the watering hole addition, researched statistically significant and realistic parameters to implement in the model, created branch syd after mesa and jupyter complications, wrote the abstract, and added the background, trophic introduction, questions, conclusion, and ecological limitations slide to the presentation, and made sure there was overall ecological significance and accuracy throuhgout the project. 
 
 # Abstract
 
