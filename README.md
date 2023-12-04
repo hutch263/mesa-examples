@@ -13,7 +13,7 @@ from mesa_models.boltzmann_wealth_model.model import BoltzmannWealthModel
 # Member Contributions
 
   * Kaitlyn: took notes for project discussion and planning notebook, made skeleton code(? pass) to brainstorm how we wanted to attempt making classes, researched plants that we could add to model/how they may be affected by elk, prepared notes on random walk script for group meeting 11/22, changed movement of elk and wolves so not random - stay mostly within range of watering holes, created mesa slides, helped direct tasks for group
-  * Sarah: 
+  * Sarah: Created original presentations and presentation outlines, got working example of original unchanged mesa code, researched statistics for wolves overall, researched statistics for wolf and elk reproduction across season, created branch sarah_mesa that contained spring code, made changes to the code to reflect spring changes, created winter_version branch and made changes to the code to reflect winter changes, placed spring and winter changes in context for presentation.
   * Aleeza: Created initial abm of a predator-prey model in first project phase (without ant movement functionality; simply randomly placed the 3 species on the board; this project was abandoned for mesa. For next project phase (involving mesa), added probability that wolf kills elk in same cell to be random inside the Wolf class, aided in watering hole placement/energy addition
   * Liv: game board sizing, change initial starting values, watering hole placement and energy addition, elk and wolf icons
   * Sydney: background and content understanding, abstract, project planning and setup, watering hole addition, ecological significance/accuracy
